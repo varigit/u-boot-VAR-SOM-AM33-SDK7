@@ -12,7 +12,7 @@
 #define  I2C_BASE3		0x4819C000
 #define	 I2C_BUS_MAX		3
 
-#define I2C_DEFAULT_BASE		I2C_BASE1
+#define I2C_DEFAULT_BASE		I2C_BASE2
 
 struct i2c {
 	unsigned short revnb_lo;        /* 0x00 */

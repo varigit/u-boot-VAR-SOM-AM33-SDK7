@@ -18,8 +18,7 @@
 
 #include <configs/ti_am335x_common.h>
 
-#define MACH_TYPE_TIAM335EVM		3589	/* Until the next sync */
-#define CONFIG_MACH_TYPE		MACH_TYPE_TIAM335EVM
+#define CONFIG_MACH_TYPE		MACH_TYPE_VAR_AM335X
 
 /* Clock Defines */
 #define V_OSCK				24000000  /* Clock output from T2 */
@@ -140,20 +139,10 @@
 	"ramboot=echo Booting from ramdisk ...; " \
 		"run ramargs; " \
 		"bootz ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
-	"findfdt="\
-		"if test $board_name = A335BONE; then " \
-			"setenv fdtfile am335x-bone.dtb; fi; " \
-		"if test $board_name = A335BNLT; then " \
-			"setenv fdtfile am335x-boneblack.dtb; fi; " \
-		"if test $board_name = A33515BB; then " \
-			"setenv fdtfile am335x-evm.dtb; fi; " \
-		"if test $board_name = A335X_SK; then " \
-			"setenv fdtfile am335x-evmsk.dtb; fi; " \
-		"if test $fdtfile = undefined; then " \
-			"echo WARNING: Could not determine device tree to use; fi; \0" \
+	"findfdt=setenv fdtfile am335x-som.dtb\0" \
 	BOOTCMD_COMMON \
-	BOOTCMD_MMC \
 	BOOTCMD_NAND \
+	BOOTCMD_MMC \
 	BOOTCMD_USB
 #endif
 
@@ -420,9 +409,9 @@
 #define CONFIG_SF_DEFAULT_SPEED		24000000
 
 /* Network. */
-#define CONFIG_PHY_GIGE
 #define CONFIG_PHYLIB
-#define CONFIG_PHY_SMSC
+#define CONFIG_PHY_ADDR         0
+#define CONFIG_PHY_MICREL
 
 /*
  * NOR Size = 16 MiB
