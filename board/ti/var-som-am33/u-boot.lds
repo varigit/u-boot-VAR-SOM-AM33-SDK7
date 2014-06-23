@@ -35,7 +35,7 @@ SECTIONS
 	{
 		*(.__image_copy_start)
 		CPUDIR/start.o (.text*)
-		board/ti/var-som-am33/libam335x.o (.text*)
+		board/ti/var-som-am33/libvar-som-am33.o (.text*)
 		*(.text*)
 	}
 
