@@ -139,7 +139,7 @@
 	"ramboot=echo Booting from ramdisk ...; " \
 		"run ramargs; " \
 		"bootz ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
-	"findfdt=setenv fdtfile am335x-som.dtb\0" \
+	"findfdt=setenv fdtfile var-som-am33.dtb\0" \
 	BOOTCMD_COMMON \
 	BOOTCMD_NAND \
 	BOOTCMD_MMC \
