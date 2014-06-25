@@ -201,6 +201,8 @@ int board_init(void)
 #if defined(CONFIG_NOR) || defined(CONFIG_NAND)
 	gpmc_init();
 #endif
+	rtc32k_enable();
+
 
 	gpio_request(GPIO_SOM_REV_BIT0_GPIO, "som_rev_bit_0");
 	gpio_direction_input(GPIO_SOM_REV_BIT0_GPIO);

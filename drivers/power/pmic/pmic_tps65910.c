@@ -27,6 +27,7 @@ int tps65910_set_i2c_control(void)
 		return ret;
 
 	buf |= TPS65910_DEVCTRL_REG_SR_CTL_I2C_SEL_CTL_I2C;
+	buf &= 0xDF;
 
 	return i2c_write(TPS65910_CTRL_I2C_ADDR, TPS65910_DEVCTRL_REG, 1,
 			 &buf, 1);
