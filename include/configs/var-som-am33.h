@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef __CONFIG_AM335X_EVM_H
-#define __CONFIG_AM335X_EVM_H
+#ifndef __CONFIG_VAR_SOM_AM33_H
+#define __CONFIG_VAR_SOM_AM33_H
 
 #include <configs/ti_am335x_common.h>
 
@@ -24,8 +24,6 @@
 #define V_OSCK				24000000  /* Clock output from T2 */
 #define V_SCLK				(V_OSCK)
 
-/* Custom script for NOR */
-#define CONFIG_SYS_LDSCRIPT		"board/ti/var-som-am33/u-boot.lds"
 
 /* Always 128 KiB env size */
 #define CONFIG_ENV_SIZE			(128 << 10)
@@ -69,15 +67,6 @@
 		"${optargs} " \
 		"root=${usbroot} " \
 		"rootfstype=${usbrootfstype}\0" \
-	"spiroot=/dev/mtdblock4 rw\0" \
-	"spirootfstype=jffs2\0" \
-	"spisrcaddr=0xe0000\0" \
-	"spiimgsize=0x362000\0" \
-	"spibusno=0\0" \
-	"spiargs=setenv bootargs console=${console} " \
-		"${optargs} " \
-		"root=${spiroot} " \
-		"rootfstype=${spirootfstype}\0" \
 	"netargs=setenv bootargs console=${console} " \
 		"${optargs} " \
 		"root=/dev/nfs " \
@@ -92,7 +81,6 @@
 		"${optargs} " \
 		"root=${ramroot} " \
 		"rootfstype=${ramrootfstype}\0" \
-	"loadramdisk=load mmc ${mmcdev} ${rdaddr} ramdisk.gz\0" \
 	"loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}\0" \
 	"loadfdt=load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}\0" \
 	"mmcloados=run mmcargs; " \
@@ -124,11 +112,6 @@
 				"run mmcloados;" \
 			"fi;" \
 		"fi;\0" \
-	"spiboot=echo Booting from spi ...; " \
-		"run spiargs; " \
-		"sf probe ${spibusno}:0; " \
-		"sf read ${loadaddr} ${spisrcaddr} ${spiimgsize}; " \
-		"bootz ${loadaddr}\0" \
 	"netboot=echo Booting from network ...; " \
 		"setenv autoload no; " \
 		"dhcp; " \
@@ -136,9 +119,6 @@
 		"tftp ${fdtaddr} ${fdtfile}; " \
 		"run netargs; " \
 		"bootz ${loadaddr} - ${fdtaddr}\0" \
-	"ramboot=echo Booting from ramdisk ...; " \
-		"run ramargs; " \
-		"bootz ${loadaddr} ${rdaddr} ${fdtaddr}\0" \
 	"findfdt=setenv fdtfile var-som-am33.dtb\0" \
 	BOOTCMD_COMMON \
 	BOOTCMD_NAND \
@@ -182,13 +162,6 @@
 #define CONFIG_SPL_ENV_SUPPORT
 #define CONFIG_SPL_NET_VCI_STRING	"AM335x U-Boot SPL"
 
-/* SPI flash. */
-#define CONFIG_SPL_SPI_SUPPORT
-#define CONFIG_SPL_SPI_FLASH_SUPPORT
-#define CONFIG_SPL_SPI_LOAD
-#define CONFIG_SPL_SPI_BUS		0
-#define CONFIG_SPL_SPI_CS		0
-#define CONFIG_SYS_SPI_U_BOOT_OFFS	0x20000
 
 #define CONFIG_SPL_LDSCRIPT		"$(CPUDIR)/am33xx/u-boot-spl.lds"
 #endif
@@ -268,13 +241,6 @@
 #define NANDARGS ""
 #endif /* !CONFIG_NAND */
 
-/*
- * For NOR boot, we must set this to the start of where NOR is mapped
- * in memory.
- */
-#ifdef CONFIG_NOR_BOOT
-#define CONFIG_SYS_TEXT_BASE		0x08000000
-#endif
 
 /*
  * USB configuration.  We enable MUSB support, both for host and for
@@ -363,101 +329,14 @@
 	"fdt ram 0x80F80000 0x80000;" \
 	"ramdisk ram 0x81000000 0x4000000"
 
-/*
- * Default to using SPI for environment, etc.
- * 0x000000 - 0x020000 : SPL (128KiB)
- * 0x020000 - 0x0A0000 : U-Boot (512KiB)
- * 0x0A0000 - 0x0BFFFF : First copy of U-Boot Environment (128KiB)
- * 0x0C0000 - 0x0DFFFF : Second copy of U-Boot Environment (128KiB)
- * 0x0E0000 - 0x442000 : Linux Kernel
- * 0x442000 - 0x800000 : Userland
- */
-#if defined(CONFIG_SPI_BOOT)
-#define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_SYS_REDUNDAND_ENVIRONMENT
-#define CONFIG_ENV_SPI_MAX_HZ		CONFIG_SF_DEFAULT_SPEED
-#define CONFIG_ENV_SECT_SIZE		(4 << 10) /* 4 KB sectors */
-#define CONFIG_ENV_OFFSET		(768 << 10) /* 768 KiB in */
-#define CONFIG_ENV_OFFSET_REDUND	(896 << 10) /* 896 KiB in */
 
-#ifdef MTDIDS_DEFAULT
-#undef MTDIDS_DEFAULT
-#endif
-#define MTDIDS_DEFAULT			"nor0=m25p80-flash.0"
 
-#ifdef MTDPARTS_DEFAULT
-#undef MTDPARTS_DEFAULT
-#endif
-#define MTDPARTS_DEFAULT		"mtdparts=m25p80-flash.0:128k(SPL)," \
-					"512k(u-boot),128k(u-boot-env1)," \
-					"128k(u-boot-env2),3464k(kernel)," \
-					"-(rootfs)"
-#elif defined(CONFIG_EMMC_BOOT)
-#undef CONFIG_ENV_IS_NOWHERE
-#define CONFIG_ENV_IS_IN_MMC
-#define CONFIG_SYS_MMC_ENV_DEV		1
-#define CONFIG_SYS_MMC_ENV_PART		2
-#define CONFIG_ENV_OFFSET		0x0
-#define CONFIG_ENV_OFFSET_REDUND	(CONFIG_ENV_OFFSET + CONFIG_ENV_SIZE)
-#define CONFIG_SYS_REDUNDAND_ENVIRONMENT
-#endif
-
-/* SPI flash. */
-#define CONFIG_CMD_SF
-#define CONFIG_SPI_FLASH
-#define CONFIG_SPI_FLASH_WINBOND
-#define CONFIG_SF_DEFAULT_SPEED		24000000
 
 /* Network. */
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_ADDR         0
 #define CONFIG_PHY_MICREL
 
-/*
- * NOR Size = 16 MiB
- * Number of Sectors/Blocks = 128
- * Sector Size = 128 KiB
- * Word length = 16 bits
- * Default layout:
- * 0x000000 - 0x07FFFF : U-Boot (512 KiB)
- * 0x080000 - 0x09FFFF : First copy of U-Boot Environment (128 KiB)
- * 0x0A0000 - 0x0BFFFF : Second copy of U-Boot Environment (128 KiB)
- * 0x0C0000 - 0x4BFFFF : Linux Kernel (4 MiB)
- * 0x4C0000 - 0xFFFFFF : Userland (11 MiB + 256 KiB)
- */
-#if defined(CONFIG_NOR)
-#undef CONFIG_SYS_NO_FLASH
-#define CONFIG_CMD_FLASH
-#define CONFIG_SYS_FLASH_USE_BUFFER_WRITE
-#define CONFIG_SYS_FLASH_PROTECTION
-#define CONFIG_SYS_FLASH_CFI
-#define CONFIG_FLASH_CFI_DRIVER
-#define CONFIG_FLASH_CFI_MTD
-#define CONFIG_SYS_MAX_FLASH_SECT	128
-#define CONFIG_SYS_MAX_FLASH_BANKS	1
-#define CONFIG_SYS_FLASH_BASE		(0x08000000)
-#define CONFIG_SYS_FLASH_CFI_WIDTH	FLASH_CFI_16BIT
-#define CONFIG_SYS_MONITOR_BASE		CONFIG_SYS_FLASH_BASE
-#ifdef CONFIG_NOR_BOOT
-#define CONFIG_ENV_IS_IN_FLASH
-#define CONFIG_ENV_SECT_SIZE		(128 << 10)	/* 128 KiB */
-#define CONFIG_ENV_OFFSET		(512 << 10)	/* 512 KiB */
-#define CONFIG_ENV_OFFSET_REDUND	(768 << 10)	/* 768 KiB */
-#ifdef MTDIDS_DEFAULT
-#undef MTDIDS_DEFAULT
-#endif
-#define MTDIDS_DEFAULT			"nor0=physmap-flash.0"
-
-#ifdef MTDPARTS_DEFAULT
-#undef MTDPARTS_DEFAULT
-#endif
-#define MTDPARTS_DEFAULT		"mtdparts=physmap-flash.0:" \
-					"512k(u-boot)," \
-					"128k(u-boot-env1)," \
-					"128k(u-boot-env2)," \
-					"4m(kernel),-(rootfs)"
-#endif
-#endif  /* NOR support */
 
 #ifdef CONFIG_MMC
 #define BOOT_TARGETS_MMC "mmc0"
@@ -477,4 +356,4 @@
 #define BOOT_TARGETS_NAND ""
 #endif
 
-#endif	/* ! __CONFIG_AM335X_EVM_H */
+#endif	/* ! __CONFIG_VAR_SOM_AM33_H */
