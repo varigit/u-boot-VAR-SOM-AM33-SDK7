@@ -282,16 +282,17 @@ int board_phy_config(struct phy_device *phydev)
 
 static struct cpsw_slave_data cpsw_slaves[] = {
 	{
-		.slave_reg_ofs	= 0x208,
-		.sliver_reg_ofs	= 0xd80,
-		.phy_addr	= 0,
-	},
-	{
 		.slave_reg_ofs	= 0x308,
 		.sliver_reg_ofs	= 0xdc0,
 		.phy_addr	= 7,
 	},
-};
+	{
+		.slave_reg_ofs	= 0x208,
+		.sliver_reg_ofs	= 0xd80,
+		.phy_addr	= 0,
+	},
+}
+;
 
 static struct cpsw_platform_data cpsw_data = {
 	.mdio_base		= CPSW_MDIO_BASE,
