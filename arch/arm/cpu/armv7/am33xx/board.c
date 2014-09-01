@@ -224,6 +224,8 @@ void s_init(void)
 	/* Enable RTC32K clock */
 	rtc32k_enable();
 	sdram_init();
+	/* Variscite: Fine-tune delay after sdram_init(). */
+	udelay(500);
 }
 #endif
 
