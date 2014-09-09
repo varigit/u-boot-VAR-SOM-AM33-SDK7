@@ -197,12 +197,14 @@ void sdram_init(void)
  */
 int board_init(void)
 {
+	int som_rev_major = 0;
+	int som_rev_minor = 0;
+
 	gd->bd->bi_boot_params = CONFIG_SYS_SDRAM_BASE + 0x100;
 #if defined(CONFIG_NOR) || defined(CONFIG_NAND)
 	gpmc_init();
 #endif
 	rtc32k_enable();
-
 
 	gpio_request(GPIO_SOM_REV_BIT0_GPIO, "som_rev_bit_0");
 	gpio_direction_input(GPIO_SOM_REV_BIT0_GPIO);
@@ -220,9 +222,33 @@ int board_init(void)
 	gpio_free(GPIO_SOM_REV_BIT2_GPIO);
 
 #if !defined(CONFIG_SPL_BUILD)
+	/*
+	2 = rev 1.2
+	3 = rev 1.3
+	4 = rev 2.1
+	*/
+	switch (som_rev)
+	{
+	case 2:
+		som_rev_major = 1;
+		som_rev_minor = 2;
+		break;
+	case 3:
+		som_rev_major = 1;
+		som_rev_minor = 3;
+		break;
+	case 4:
+		som_rev_major = 2;
+		som_rev_minor = 1;
+		break;
+	default:
+		som_rev_major = -1;
+		som_rev_minor = -1;
+	}
+
 	if (som_rev > 0)
-		printf("Variscite AM33 SOM revision 1.%d detected\n",
-				som_rev);
+		printf("Variscite AM33 SOM revision %d.%d detected\n",
+				som_rev_major, som_rev_minor);
 	else {
 		printf("ERROR: unknown Variscite AM33X SOM revision.\n");
 		hang();
