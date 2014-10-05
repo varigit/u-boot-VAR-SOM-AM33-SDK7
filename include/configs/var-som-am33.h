@@ -215,10 +215,17 @@
 					      "8m(NAND.kernel)," \
 					      "-(NAND.rootfs)"
   #undef CONFIG_ENV_IS_NOWHERE
-  #define CONFIG_ENV_IS_IN_NAND
-  #define CONFIG_ENV_OFFSET			0x001C0000
-  #define CONFIG_ENV_OFFSET_REDUND		0x001E0000
-  #define CONFIG_SYS_ENV_SECT_SIZE		CONFIG_SYS_NAND_BLOCK_SIZE
+  #if defined(CONFIG_ENV_IS_IN_FAT)
+       #define FAT_ENV_FILE                    "u-boot_env.txt"
+       #define FAT_ENV_INTERFACE               "mmc"
+       #define FAT_ENV_DEVICE                  0
+       #define FAT_ENV_PART                    1
+  #else
+       #define CONFIG_ENV_IS_IN_NAND
+       #define CONFIG_ENV_OFFSET                       0x001C0000
+       #define CONFIG_ENV_OFFSET_REDUND                0x001E0000
+       #define CONFIG_SYS_ENV_SECT_SIZE                CONFIG_SYS_NAND_BLOCK_SIZE
+  #endif//CONFIG_VAR_MMC_BOOT
 #endif
 /* NAND: SPL related configs */
 #if !defined(CONFIG_SPI_BOOT) && !defined(CONFIG_NOR_BOOT) && \
