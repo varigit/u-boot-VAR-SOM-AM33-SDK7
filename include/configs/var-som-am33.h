@@ -356,4 +356,9 @@
 #define BOOT_TARGETS_NAND ""
 #endif
 
+#ifdef CONFIG_BOOTDELAY
+#undef CONFIG_BOOTDELAY
+#endif
+#define CONFIG_BOOTDELAY       1
+
 #endif	/* ! __CONFIG_VAR_SOM_AM33_H */
