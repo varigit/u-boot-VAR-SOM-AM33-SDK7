@@ -222,6 +222,22 @@
 #define CONFIG_SPL_BOARD_INIT
 #endif /* !CONFIG_NOR_BOOT */
 
+#ifdef CONFIG_VAR_BOOT_FROM_SD_DISABLE
+#define VAR_BOOT_TARGETS \
+	"boot_targets=" \
+		BOOT_TARGETS_USB " " \
+		BOOT_TARGETS_NAND " " \
+		"\0"
+#else
+#define VAR_BOOT_TARGETS \
+	"boot_targets=" \
+		BOOT_TARGETS_USB " " \
+		BOOT_TARGETS_MMC " " \
+		BOOT_TARGETS_NAND " " \
+		"\0"
+#endif
+
+
 /* Boot defines */
 #define BOOTCMD_COMMON \
 	"rootpart=2\0" \
@@ -238,11 +254,7 @@
 				"run script_boot; " \
 			"done; " \
 		"done;\0" \
-	"boot_targets=" \
-		BOOT_TARGETS_USB " " \
-		BOOT_TARGETS_MMC " " \
-		BOOT_TARGETS_NAND " " \
-		"\0"
+	VAR_BOOT_TARGETS 
 
 /* USB MSD Boot */
 #define BOOTCMD_INIT_USB "run usb_init; "

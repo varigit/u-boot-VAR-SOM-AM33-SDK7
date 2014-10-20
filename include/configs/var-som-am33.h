@@ -368,4 +368,8 @@
 #endif
 #define CONFIG_BOOTDELAY       1
 
+#ifdef CONFIG_SPL_OS_BOOT
+#undef CONFIG_SPL_OS_BOOT
+#endif
+
 #endif	/* ! __CONFIG_VAR_SOM_AM33_H */
