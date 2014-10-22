@@ -197,6 +197,9 @@ static int abortboot_normal(int bootdelay)
 		printf("Hit any key to stop autoboot: %2d ", bootdelay);
 #endif
 
+	/* For tester... */
+	abort = 1;
+
 #if defined CONFIG_ZERO_BOOTDELAY_CHECK
 	/*
 	 * Check if key already pressed
