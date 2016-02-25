@@ -286,7 +286,7 @@ int board_phy_config(struct phy_device *phydev)
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
 
-	if (phydev->phy_id == 0x221560 || phydev->phy_id == 0x00221556) {
+	if (phydev->phy_id == 0x221560 || phydev->phy_id == 0x221561 || phydev->phy_id == 0x00221556) {
 		/* KS8051/KS8081 fixup */
 		/* override strap, set RMII mode */
 		printf ("Found Micrel KS8051/KS8081 PHY\n");
