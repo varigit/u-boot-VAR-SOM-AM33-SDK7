@@ -225,7 +225,7 @@
        #define CONFIG_ENV_OFFSET                       0x001C0000
        #define CONFIG_ENV_OFFSET_REDUND                0x001E0000
        #define CONFIG_SYS_ENV_SECT_SIZE                CONFIG_SYS_NAND_BLOCK_SIZE
-  #endif//CONFIG_VAR_MMC_BOOT
+  #endif /* CONFIG_VAR_MMC_BOOT */
 #endif
 /* NAND: SPL related configs */
 #if !defined(CONFIG_SPI_BOOT) && !defined(CONFIG_NOR_BOOT) && \
